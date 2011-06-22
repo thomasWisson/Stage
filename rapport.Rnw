@@ -1,0 +1,519 @@
+\documentclass[a4paper]{article}%Précise que c'est un article
+\usepackage[utf8]{inputenc}%Style d'encodage
+\usepackage[english]{babel} %Donne la typologie
+\usepackage{graphicx} %Pour intégrer des images
+\usepackage{amsmath} % Librairie  pour utiliser les maths
+\usepackage{amsfonts}
+\usepackage{tikz}  % Utile pour la graphique short path
+\usepackage{float}% utile pour placer les tableaux
+\title{{Placement report}}
+\author{Thomas Wisson\\
+\texttt{thomas.wisson@etudiant.univ-bpclermont.fr}}
+\date{May and June 2011}
+\begin{document}
+\maketitle
+
+
+%\include(blabla.tex) Rajoute tout le blabla utile pour le rapport de stage
+ 
+\section*{Introduction}\label{sec:intro}
+Lot sizing is a classic issue of logistics which consists to satisfy the demand 
+and minimize the producing cost. We need to balance setup's cost and hold's stock.
+
+Even if there are a lot of heuristics, exact's methods exists. In the 50's, 
+Wagner and Whitin\cite{Wagner&Whitin58}, show that no producing planning can be optimal 
+if we product and hold in the same time it is the theorem horizon. There are an 
+algorithm, based on the dynamic programming, which solve a lot sizing problem in 
+quadratic complexity (for each period it compute all producing costs.)
+Then it's showed that the aggregate demand and costs make a 
+convex space where its envelop is the optimal solution\cite{Wagelmans&Kolen92}.
+This allow to search the lower cost on this planning horizon, and this search 
+have a $logT$ complexity that's why we have an algorithm with a best complexity, 
+even linear when all parameters are constant and the search occurred in constant
+complexity.
+
+On an other side Thomas\cite{Thomas70} extends the minimization cost of Wagner
+ and Whitin \cite{Wagner&Whitin58} by the maximization of profit. In fact in the
+ monopolistic environment the demand depend only of the price that allow to it 
+ increase benefits. But this algorithm have a quadratic complexity
+ 
+Your first idea is to use the algorithm based on the dynamic programming 
+of \cite{Wagelmans&Kolen92} and to apply it in the monopolistic environment to 
+adapt the algorithm of Thomas to have a best complexity.
+
+\newpage
+\tableofcontents
+\newpage
+\listoffigures
+\listoftables
+\newpage
+\section{Monopolistic environment}
+
+\subsection{The Thomas's algorithm}
+
+\subsubsection{The model}\label{sbsec:model1}
+\begin{align}
+    &\Pi = \sum_{t=0}^T d_{t}p_{t} - s_{t} \delta_{t} - 
+    h_{t-1} I_{t} - x_{t} X_{t}
+    \intertext{subject to}
+    &\forall t \in \{0..T\} \;\;\;\; X_{t} + I_{t-1} - I_{t}
+     = d_{t}\label{eq:eq1}\\
+    &\forall t \in \{0..T\} \;\;\;\; I_{t} \geq 0, X_{t} \geq 0\notag\\
+    &\forall t \in \{0..T\} \;\;\;\; \delta_{t}\in \{0,1\}\notag
+\end{align}
+
+\begin{align*}
+    d_{t}&\text{ is the demand in the period t}\\
+    p_{t}&\text{ is the price in period  t}\\
+    s_{t}&\text{ is the price of the setup in period  t}\\
+    \delta_{t}&=\left\{
+        \begin{array}{cl}
+            1&\text{when items is produced in period t}\\
+            0&\text{otherwise}
+        \end{array}\right . \\
+    h_{t}&\text{ is the price to hold in period  t}\\
+    I_{t}&\text{ is the amount stored in period t}\\
+    x_{t}&\text{ is the price to produced in period  t}\\
+    X_{t}&\text{ is the amount produced in period t}\\
+\end{align*}
+
+\subsubsection{The planning horizon}
+
+In the Thomas's algorithm \cite{Thomas70} the only assumption on the demand is 
+that $d(p_{t})p_{t}$ take is maximum value for a finite value of $p_{t}$. This 
+assumption allow to have a single maximum on each batch.
+
+The theorem of the planning horizon is based on $X_t I_t = 0$. Concretely we 
+can't have an optimal solution if we product and stock in the same time. This 
+allow to consider only one state.
+
+Thank's to \eqref{eq:eq1} we reformulated the model :
+\begin{align}
+    \Pi &=\sum_{t=0}^T \left[d(p_{t})+V_{t}+ \sum_{i=0}^t h_{i}\right]
+    p_{t}- s_{t} \delta_{t}\\
+    \Pi &=\sum_{t=0}^T\pi_{t}\text{,       where  }\pi_{t} =\max_p\left(\left[
+    d(p_{t})V_{t}+\sum_{i=0}^t h_{i}\right]p_{t}- s_{t} \delta_{t}\right)
+\end{align}
+
+We know that we have a single maximum and with this reformulation it is easy to
+compute this maximum. The Thomas's algorithm \cite{Thomas70} can be explain as a
+short path problem\footnote{For one product, it would be the same for several 
+products} and it is easier to understand :
+
+\begin{figure}
+    \begin{tikzpicture}[scale=2]
+        \tikzset{f/.style={draw,circle,thick=\small}};
+        \tikzset{e/.style={draw}};
+        \tikzset{bl/.style={midway,sloped,above,font=\small}}
+        \tikzset{br/.style={midway,sloped,below,font=\small}}
+        \tikzset{df/.style={thick,->}};
+        \tikzset{dd/.style={thick,dashed}};
+        \node[f] (0) at (0,0) {0};
+        \node[f] (1) at (1,0) {1};
+        \node[f] (2) at (2,0) {2};
+        \node[f] (3) at (3,0) {3};
+        \node (4) at (4,0) {$\dots$};
+        \node[f] (n) at (5,0) {n};
+        \draw [df](0) edge[bend left] node[bl] {$\pi_{0,3}$} (3);
+        \draw [df](0) edge[bend right] node[br] {$\pi_{0,2}$} (2);
+        \draw [df](1) edge[bend right] node[br] {$\pi_{1,3}$} (3);
+        \draw [df](0) to (1) node[bl] {$\pi_{0,1}$};
+        \draw [df](1) to (2) node[bl] {$\pi_{1,2}$};
+        \draw [df](2) to (3) node[bl] {$\pi_{2,3}$};
+        \draw [dd](0) edge[bend left] node[bl] {} (3.7,.7);
+        \draw [dd](2) edge[bend left] node[bl] {} (3.6,.6);
+        \draw [dd](1) edge[bend right] node[br] {} (3.7,-.5);
+        \draw [dd](3) to (3.5,0) node[bl] {};
+    \end{tikzpicture}
+\caption{Illustration of the short path problem}
+\end{figure}
+
+Where states are setup period, and $\pi_{t,\tau}$ the profit to go from a
+setup at the period t to one at the period $\tau$. We can then write the
+dynamic program above.
+
+\begin{align}
+    \Pi(t) &= \max_\tau[\pi_{t,\tau}+ \Pi(\tau)]
+\end{align}
+
+With this diagram we can easily understand the idea of the planning horizon. In 
+fact a period between two setup is a planning horizon and we only have to 
+maximize the profit on this period. We can understand that for each period 
+Thomas's algorithm \cite{Thomas70} compute all previous profits, in the example,
+at the period 3 we compute $\pi_{2,3}, \pi_{1,3}$ and $\pi_{0,3}$. That's why we
+have a complexity in $T^2$
+
+\subsubsection{Idea to perform the algorithm}
+We have seen that the complexity of Thomas's algorithm \cite{Thomas70} is $T^2$.
+To decrease this complexity we want to adapt the search of Wagelmans and Kolen
+\cite{Wagelmans&Kolen92} and to apply it on the case of Thomas.
+
+The Wagner and Whitin algorithm\cite{Wagner&Whitin58} is to minimize the 
+production costs, for each period they compute all the previous production costs
+ that's lead to a complexity in $T^2$ too. The idea is to use aggregate demands.
+\paragraph{Wagelmans and Kolen model}
+Their first model is similar to the Wagner and Whitin one \cite{Wagner&Whitin58}
+with an aggregate demand.
+
+\begin{align}
+    G &= \sum_{t=0}^T p_t X_t + s_t \delta_t +h_t I_t
+    \intertext{subject to}
+    &X_t + I_{t-1} - I_t= d_t\\
+    &d_{t,T}\, \delta_t - x_t \geq 0\\
+    &I_0 = I_T = 0\\
+    &d_{j,t} = \sum_{k=j}^t d_k\notag
+\end{align}
+
+Then they reformulated the model to add the aggregate number of unit and thank's
+to that they can work on period's interval.
+
+\begin{align}
+    G &= \sum_{t=0}^T \left(s_t \delta_t +c_t\sum_{k=t}^T x_{t,k}\right)
+    \intertext{subject to}
+    &\sum_{k=t}^T x_{t,k}= d_t\\
+    &d_{t,T}\, \delta_t - x_{t,k} \geq 0\\
+    &x_{t,k} \geq 0\notag\\
+    &c_t = p_t + \sum_{k=t}^T h_k
+\end{align}
+\begin{align*}
+    &x_{i,j}\text{ is the number of units produced in period i to satisfy demand
+    of period j $\geq$ i}
+\end{align*}
+
+To solve this problem they use a convex function with become the tool of search 
+for the lower cost.
+
+\begin{align}
+    g(t)&=\left\{
+        \begin{array}{cl}
+            &\min_{t \leq i \leq T+1}[s_t + c_t d_{t,i-1} + g(i)]\text{ if 
+            $d_t \geq 0$}\\
+            &\min \left[ g(t+1),\min_{t \leq i \leq T+1} s_t + c_t d_{t,i-1} + g(i)
+            \right] \text{ if $d_t = 0$}
+        \end{array}\right .
+\end{align}
+
+It is the built of this function which is the search of the minimize production 
+costs. Instead of compute all previous production costs as in the Wagner and 
+Whitin \cite{Wagner&Whitin58} they compare different slope of this function g. 
+This lead to a $logT$ complexity.
+
+\begin{figure}[H]
+\begin{center}
+\setkeys{Gin}{width=0.8\textwidth}
+<<echo=FALSE,fig=TRUE,width=4,height=4>>=
+#g<- c(1000, 2100,3000,4200,6000)
+#demand<- c(40,80,100,120,140)
+#plot(demand, g, xlab="Demand",
+#    ylab="g",type='b', pch=3, col=1, )
+data <-read.table("costs.csv", header=TRUE, dec=".", sep=";",encoding="utf8")
+plot(data$demand[data$struture==16], data$cost[data$struture==16], xlab="Demand",
+    ylab="Costs",type='b', pch=3, col='red', ylim=c(min(data$cost),max(data$cost)))
+for (s in data$struture[data$struture != 16]){
+    points(data$demand[data$struture==s], data$cost[data$struture==s],type='p', 
+    pch=3, col='black')
+    }
+@
+\caption{Illustration of g}
+\label{fig:convex}
+\end{center}
+\end{figure}
+
+As we can see on this graphics, the comparison of the slope of g allow to 
+determine the lower cost. We replace the computation of all previous costs by 
+the search of the lowest slope. This is this idea which lead to a $logT$ 
+complexity.
+
+\paragraph{Problem to adapt for Thomas's algorithm}
+
+The main difference between the two model is that price are not constant in the 
+Thomas's algorithm \cite{Thomas70} and of course is the prices are not constant
+the demand isn't too. 
+The idea is to built a function as Wagelmans and Kolen \cite{Wagelmans&Kolen92} 
+to maximize the profit 
+but this function isn't convex because of the profit and the demand depend of 
+the price. Thus we can't compare slope of the function and consequently use the 
+search in $logT$. To illustrate the problem we make a program which compute all 
+demands for all profit.
+
+\begin{figure}[H]
+\begin{center}
+\setkeys{Gin}{width=0.8\textwidth}
+<<echo=FALSE,fig=TRUE,width=4,height=4>>=
+data <-read.table("profit.csv", header=TRUE, dec=".", sep=";",encoding="utf8")
+plot(data$demand[data$struture==1], data$profit[data$struture==1], xlab="Demand",
+    ylab="Profit",type='b', pch=3, col=1, ylim=c(min(data$profit),max(data$profit)))
+for (s in data$struture[data$struture > 1]){
+    lines(data$demand[data$struture==s], data$profit[data$struture==s],type='b', 
+    pch=3, col=s)
+    }
+@
+\caption{Compute of the profit switch the demand}
+\label{fig:fullennum}
+\end{center}
+\end{figure}
+
+
+\section{Add of the marketing effect}
+
+A new parameter can modify the demand, switch the marketing effect the demand 
+increase differently. With your previous model we can't model some situation 
+like sale moreover marketing is really part of commercial strategy, that's we
+try to add in your model the marketing effect. 
+
+\subsection{The discrete marketing}
+
+For adding this marketing effect we add a binary coefficient $\Delta$ which
+is equal to 1 when there is marketing and 0 otherwise, a coefficient M to 
+quantify the marketing effect and of course the cost of this marketing effect c.
+This allow to change just a little the model and to use the Thomas 's algorithm
+\cite{Thomas70} and the main asset of this discrete model is to have a lag 
+effect. In fact the marketing have effect on several period that's why we try 
+thank's to this discrete model to characterize this aspect.
+
+\subsubsection{The model}
+
+\begin{align}
+    \Pi =\sum_{t=0}^T D(p_t)&p_t - s_t \delta_t-h_{t-1} I_t - x_t X_t - 
+    \Delta_t c_t\\
+    \intertext{subject to}
+    \forall t \in \{0..T\} \;\;\;\; &D_t(p_t)= d_t(p_t)+ \Delta_t M_t + 
+    \Delta_{t-1} M_{t-1}\\
+\end{align}
+
+Here we focus on two period t and t-1 but it is easy to extend this to more 
+periods.
+
+\begin{align*}
+    D_t&\text{ is the demand in the period t with the marketing effect }\\
+    M_t&\text{ is the marketing effect in period  t}\\
+    c_t&\text{ is the cost of marketing in period  t}\\
+\end{align*}
+
+In this model the idea is that if we have marketing we add a quantity to the 
+demand and of course a marketing's cost. As in the Thomas's algorithm 
+\cite{Thomas70} the function $\Pi$ is concave for all $\Delta$. This model allow
+to have the theorem of the planning horizon even if we have a link between 
+period because of the marketing. In fact as we just add a binary and
+a parameter which don't depend of the price we have the same assumption, we just
+have to know if we have marketing in the last batch, for this we add an 
+indicator. To illustrated this we can use again the short path model :
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{tikzpicture}[scale=2]
+            \tikzset{f/.style={draw,circle,thick=\small}};
+            \tikzset{e/.style={draw}};
+            \tikzset{bl/.style={midway,sloped,above,font=\small}}
+            \tikzset{br/.style={midway,sloped,below,font=\small}}
+            \tikzset{df/.style={thick,->}};
+            
+            \tikzset{dd/.style={thick,dashed}};
+            \node[f] (0) at (0,0) {0,0};
+            \node[f] (10) at (1,0) {1,0};
+            \node[f] (20) at (2,0) {2,0};
+            \node[f] (11) at (1,1) {1,1};
+            \node[f] (21) at (2,1) {2,1};
+            \node (3) at (3,0) {$\dots$};
+            \node[f] (n) at (4,0) {n,0};
+            \node[f] (n) at (4,1) {n,1};
+            \draw [df](0) to (10);
+            \draw [df](0) to (11) node[bl] {$\pi_{0,1,0,1}$};
+            \draw [df](0) to node[bl] {} (21);
+            \draw [df](0) edge[bend right] node[br] {$\pi_{0,2,0,0}$} (20);
+            \draw [df](10) to (20) node[bl] {};
+            \draw [df](10) to (21) node[bl] {};
+            \draw [df](11) to (20) node[bl] {};
+            \draw [df](11) to (21) node[bl] {};
+        \end{tikzpicture}
+        \caption{Short path for discrete marketing model}
+        \label{fig:spp}
+    \end{center}
+\end{figure}
+
+Now we must add indicator to know if we have marketing before or not, the 
+indicator of $\pi_{i,j,k,l}$ mean :
+\begin{align*}
+    (i,j)&\text{  Period during which the profit is compute}\\
+    k=&\left\{
+        \begin{array}{cl}
+            &1\text{ if  }\Delta_i = 1\\
+            &0\text{ if  }\Delta_i = 0
+        \end{array}\right .\\
+    l=&\left\{
+        \begin{array}{cl}
+            &1\text{ if $\Delta_j = 1$}\\
+            &0\text{ if $\Delta_j = 0$}
+        \end{array}\right .\\
+\end{align*}
+
+For example in the figure \eqref{fig:spp} we can see $\pi_{0,1,0,1}$ it the 
+profit between the period 0 and the period 1 knowing that there is no marketing
+ for period 0 and there is marketing for the period 1.
+
+To solve this model we have made an algorithm based on the Thomas's algorithm
+\cite{Thomas70} which compute the profit with and without marketing thank's to 
+Thomas's method and choose the higher profit for each period. This algorithm 
+need more computation but it have the same complexity. 
+
+The problem of this model is that we have no solver which allow to solve a 
+no linear problem with binary variable, thus we have an algorithm but we can 
+test it effectively.
+
+\subsection{The continue marketing}
+
+\subsubsection{The first Model}
+
+Using binary variable is very binding and in order to have a link between the 
+price and the marketing effect we have add a continue variable q which represent
+ the marketing effect in the period t per unit, this allow us to insert the 
+effect and it cost in the demand.
+
+\begin{align}
+    \Pi = &\sum_{t=0}^T d(p_t,q_t) p_t - s_{t} \delta_t -h_{t-1} I_t - x_t X_t\\
+    &d(p_t,q_t)= d_0-\alpha p_t + \beta q_t +\gamma q_t p_t\\
+    &d_0, \alpha, \beta \geq 0
+\end{align}
+
+
+For this model we built the demand in order to have : 
+\begin{align*}
+    &\text{When the price increase the demand must decrease }\Rightarrow  -
+    \alpha p_t\\
+    &\text{When the marketing increase the demand must increase }\Rightarrow 
+    \beta q_t
+\end{align*}
+
+We want to characterize the sale effect, in fact when the price decrease and
+the marketing increase at the same time the demand should increase a lot, more 
+than when just the price decrease or the marketing increase independatly. To 
+have this effect we must have $\frac{\partial d^2}{\partial p \partial q}\neq 0$ 
+
+We assume that to be coherent with the idea of sale $\frac{\partial d^2}
+{\partial p \partial q} \leq 0$. To illustrated your model we use a linear 
+regression which compute the coefficient $\alpha, \beta$ and $\gamma$ in the 
+sale case.
+
+\begin{center}
+<<echo=FALSE,results=tex>>=
+library(xtable)
+p<-seq(100,10,-10)
+q<- c(1,2,3,4,5,5.5,10,28,40,50)
+d<- c(12,20,30,40,50,60,70,80,90,100)
+tab <- rbind(p,q,d)
+colnames(tab) <- seq(1,10)
+xtable(tab, caption="Data for the linear regression",digits=0)
+@
+\label{tab:data}
+\end{center}
+
+We can see in the table \eqref{tab:data} that p decrease and q increase at the 
+same time so we are in the case of sale, the demand should increase too and we 
+can see that the coefficient of interaction p:q (with represent $\gamma$) is 
+negative. 
+
+\begin{center}
+<<echo=FALSE,results=tex>>=
+library(xtable)
+p<-seq(100,10,-10)
+q<- c(1,2,3,4,5,5.5,10,28,40,50)
+d<- c(12,20,30,40,50,60,70,80,90,100)
+xtable(summary(lm(d~p*q)),
+caption="Illustration with a linear regression for the model")
+@
+\label{tab:summary}
+\end{center}
+
+
+Now we know the sign of $\gamma$ we can have an other condition because we must 
+have $\frac{\partial d}{\partial p} \leq 0 $ and $\frac{\partial d}{\partial q} 
+\geq 0 $ 
+
+\begin{align*}
+    &\frac{\partial d}{\partial q} = \beta + \gamma p \;\;\;\;\;
+    \frac{\partial d}{\partial q}\geq 0 \Rightarrow q \geq \frac{\alpha}{\gamma}\\
+\end{align*}
+
+This condition is already true because q is always positive
+
+\begin{align}
+    \frac{\partial d}{\partial p} = -\alpha + \gamma q \;\;\;\;\;
+    \frac{\partial d}{\partial p}\leq 0 \Rightarrow p \leq \frac{-\beta}{\gamma}
+    \label{eq:13}
+\end{align}
+
+In practice \eqref{eq:13} can be understand by a price limit to don't have a 
+negative demand. In fact we have : $p \leq \frac{d_0}{\alpha} \leq \frac{-\beta}
+{\gamma}$ We can see with the numerical result of the linear regression that 
+$\frac{d_0}{\alpha} = 112$ and $\frac{-\beta}{\gamma} = 144$
+
+To illustrated the demand and is evolution switch the price and the marketing 
+effect : 
+
+\begin{figure}[H]
+\begin{center}
+\setkeys{Gin}{width=0.8\textwidth}
+<<echo=FALSE,fig=TRUE,width=4,height=4>>=
+library("fields")
+#Parameters
+price <- seq(0,99) #Price
+marketing <- seq(0,99) #Marketing
+T <- 5
+d0 <- 108.5
+a <- 0.98
+b <- 0.029
+g <- 0.0002
+#Initiate variables
+row <- 1
+dem <- matrix(nrow=100, ncol=100)
+profit <- matrix(nrow=100, ncol=100)
+for (p in price) {
+    dem[row,] <- d0-a*p+b*marketing-g*p*marketing
+    #profit[row,] <- (p-20-T)*dem[row,]-marketing
+    row <- row+1
+}
+#Plot the demand
+image.plot(price, marketing, dem)
+contour(price, marketing, dem, add=TRUE, col="black")
+@
+\caption{Continue demand}
+\label{fig:demand}
+\end{center}
+\end{figure}
+
+\subsubsection{The second Model}
+
+\begin{align}
+    \Pi = &\sum_{t=0}^T d(p_t,q_t)(p_t- q_t)- s_t \delta_t -h_{t-1} I_t - x_t 
+    X_t\\
+    \intertext{subject to}
+    &d(p_t,q_t)= \kappa \frac{q_t^{\gamma}}{{p_t} ^{\alpha}}\\
+    &X_t + I_{t-1} - I_t= d_t\\
+    &I_t \geq 0\;\;\; X_t \geq 0\;\;\;\delta_t\in \{0,1\}\notag
+\end{align}
+
+
+
+\subsection{The delay effect}
+
+\subsubsection{Continue}
+
+\begin{align}
+    \Pi = &\sum_{t=0}^T d(p_t,q_t,q_{t-1},q_{t-2},...)p_t - s_,t \delta_t - 
+    h_{t-1} I_t - x_t X_t\\
+    \intertext{subject to}
+    &d(p_t,q_t,q_{t-1},q_{t-2},...)= \alpha p_t - \beta q_t - \gamma q_t p_t+ 
+    \sum_{i=0}^{t-1}\theta^{t-i} q_i\\
+    &X_t + I_{t-1} - I_t= d_t\\
+    &I_t \geq 0\;\;\; X_t \geq 0\;\;\;\delta_t\in \{0,1\}\notag
+\end{align}
+
+We want to have a link between the demand and the marketing, do to that we set an
+continuous variable of marketing, a marketing by unit which allow to insert it in 
+the demand. 
+
+\newpage
+\bibliographystyle{alpha}
+\bibliography{bib_stage}
+\addcontentsline{toc}{section}{References}
+\end{document}
