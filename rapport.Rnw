@@ -492,7 +492,7 @@ contour(price, marketing, dem, add=TRUE, col="black")
     &I_t \geq 0\;\;\; X_t \geq 0\;\;\;\delta_t\in \{0,1\}\notag
 \end{align}
 
-
+%TODO Add demand curve
 
 \subsection{The delay effect}
 
