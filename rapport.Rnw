@@ -560,6 +560,7 @@ for (p in price) {
 image.plot(price, marketing, dem)
 contour(price, marketing, dem, add=TRUE, col="black")
 @
+
 \caption{Exponential model}
 \label{fig:demand1}
 \end{center}
