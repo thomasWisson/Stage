@@ -14,7 +14,7 @@
 \maketitle
 
 
-%\include(blabla.tex) Rajoute tout le blabla utile pour le rapport de stage
+\input{intro.tex} %Ajoute le blabla utile pour polytech
  
 \section*{Introduction}\label{sec:intro}
 Lot sizing is a classic issue of logistics which consists to satisfy the demand 
@@ -195,8 +195,8 @@ for the lower cost.
 
 It is the built of this function which is the search of the minimize production 
 costs. Instead of compute all previous production costs as in the Wagner and 
-Whitin \cite{Wagner&Whitin58} they compare different slope of this function g. 
-This lead to a $logT$ complexity.
+Whitin algorithm \cite{Wagner&Whitin58} they compare different slope of this 
+function g. This lead to a $logT$ complexity.
 
 \begin{figure}[H]
 \begin{center}
@@ -227,12 +227,12 @@ complexity.
 \paragraph{Problem to adapt for Thomas's algorithm}
 
 The main difference between the two model is that price are not constant in the 
-Thomas's algorithm \cite{Thomas70} and of course is the prices are not constant
+Thomas's algorithm \cite{Thomas70} and of course if the prices are not constant
 the demand isn't too. 
 The idea is to built a function as Wagelmans and Kolen \cite{Wagelmans&Kolen92} 
 to maximize the profit 
 but this function isn't convex because of the profit and the demand depend of 
-the price. Thus we can't compare slope of the function and consequently use the 
+the price. Thus we can't compare slope of the function and consequently can't use the 
 search in $logT$. To illustrate the problem we make a program which compute all 
 demands for all profit.
 
@@ -258,7 +258,7 @@ for (s in data$struture[data$struture > 1]){
 
 A new parameter can modify the demand, switch the marketing effect the demand 
 increase differently. With your previous model we can't model some situation 
-like sale moreover marketing is really part of commercial strategy, that's we
+like sale moreover marketing is really part of commercial strategy, that's why we
 try to add in your model the marketing effect. 
 
 \subsection{The discrete marketing}
@@ -362,7 +362,6 @@ test it effectively.
 
 \subsection{The continue marketing}
 
-\subsubsection{The first Model}
 
 Using binary variable is very binding and in order to have a link between the 
 price and the marketing effect we have add a continue variable q which represent
@@ -447,6 +446,27 @@ negative demand. In fact we have : $p \leq \frac{d_0}{\alpha} \leq \frac{-\beta}
 {\gamma}$ We can see with the numerical result of the linear regression that 
 $\frac{d_0}{\alpha} = 112$ and $\frac{-\beta}{\gamma} = 144$
 
+
+Now we know all sign of the coefficient we can study the extremum of the 
+profit function. To study this profit function $\Pi$ is the same to study
+the function: \[\phi(p,q)= d_0p - \alpha p^2 + \beta pq + \gamma p^2q\]
+This function is affine for q and concave for p :
+
+We can write $\phi$ as a polynom of degree 2 and as its first coefficient
+is negative this function is concave : 
+\begin{align*}
+        \phi(p,q)=\phi_q(p) = Ap^2 + Bp \;\;\; \text{where } A = \gamma q
+        -\alpha \leq 0 \;\;\;and\;\;\; B= \beta q +d_0
+\end{align*} 
+
+Thank's to this, and the fact that p and q is in a compact, we have a $q_{max}$
+and for each q we have a parabol which have a maximum which depend of q. So if
+we compute this maximum with $q_{max}$ we have the maximum of $\phi$ and the 
+only one. 
+
+So this profit function have one and only one maximum and we can compute it, 
+theses results allow us to use the Thomas's algorithm \cite{Thomas70}.
+
 To illustrated the demand and is evolution switch the price and the marketing 
 effect : 
 
@@ -476,23 +496,75 @@ for (p in price) {
 image.plot(price, marketing, dem)
 contour(price, marketing, dem, add=TRUE, col="black")
 @
-\caption{Continue demand}
+\caption{Linear model}
 \label{fig:demand}
 \end{center}
 \end{figure}
 
-\subsubsection{The second Model}
+As we can see on this figure this model isn't so representative, a linear
+diagram isn't the best way to model. That's why we try with an 
+exponential model : 
+
+\begin{align}
+        d(p,q) &= d_0 - \alpha logp + \beta logq + \gamma log(pq)\\
+        d'(p,q) &= \kappa p^{\alpha}q^{\beta}exp(\gamma log(pq))   
+\end{align}
+
+But the last term $exp(\gamma log(pq))$ have no sens for your model,
+moreover if we use the numerical result of the linear regression 
+we can out that this term is negligible
+
+\begin{align*}
+        &1 \leq p \leq 100 \;\;\; 1 \leq q \leq 100 \Rightarrow \gamma 
+        \leq \gamma log(pq) \leq 4\gamma\\
+        &\gamma = 0.0002 \Rightarrow 0,0005 \leq exp(\gamma log(pq)) 
+        \leq 0,0008\\
+        &exp(\gamma log(pq)) \approx 0
+\end{align*}
+
+%Pour dire que c'est négligeable il ne faudrait pas que le terme soit égale à 1
+%vu que c'est un produit ? Ou alors on dit que le terme fausse tout vu qu'il est 
+%égale à 0 ?
+
+That's why now we will study this new model, furthermore this model have 
+already use by Won and DaeSoo \cite{Won&DaeSoo}
+
 
 \begin{align}
     \Pi = &\sum_{t=0}^T d(p_t,q_t)(p_t- q_t)- s_t \delta_t -h_{t-1} I_t - x_t 
     X_t\\
     \intertext{subject to}
-    &d(p_t,q_t)= \kappa \frac{q_t^{\gamma}}{{p_t} ^{\alpha}}\\
-    &X_t + I_{t-1} - I_t= d_t\\
-    &I_t \geq 0\;\;\; X_t \geq 0\;\;\;\delta_t\in \{0,1\}\notag
+    &d(p_t,q_t)= \kappa p_t ^{\alpha}q_t^{\beta} \\
 \end{align}
 
-%TODO Add demand curve
+\begin{figure}[H]
+\begin{center}
+\setkeys{Gin}{width=0.8\textwidth}
+<<echo=FALSE,fig=TRUE,width=4,height=4>>=
+library("fields")
+#Parameters
+price <- seq(1,100) #Price
+marketing <- seq(1,100) #Marketing
+T <- 5
+d0 <- 10
+a <- -1
+b <- 0.5
+#Initiate variables
+row <- 1
+dem <- matrix(nrow=100, ncol=100)
+for (p in price) {
+    dem[row,] <- d0*(p^a)*(marketing^b)
+    row <- row+1
+}
+#Plot the demand
+image.plot(price, marketing, dem)
+contour(price, marketing, dem, add=TRUE, col="black")
+@
+\caption{Exponential model}
+\label{fig:demand1}
+\end{center}
+\end{figure}
+
 
 \subsection{The delay effect}
 
@@ -508,9 +580,6 @@ contour(price, marketing, dem, add=TRUE, col="black")
     &I_t \geq 0\;\;\; X_t \geq 0\;\;\;\delta_t\in \{0,1\}\notag
 \end{align}
 
-We want to have a link between the demand and the marketing, do to that we set an
-continuous variable of marketing, a marketing by unit which allow to insert it in 
-the demand. 
 
 \newpage
 \bibliographystyle{alpha}
