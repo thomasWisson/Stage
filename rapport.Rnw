@@ -2,19 +2,17 @@
 \usepackage[utf8]{inputenc}%Style d'encodage
 \usepackage[english]{babel} %Donne la typologie
 \usepackage{graphicx} %Pour intégrer des images
+\usepackage{pdfpages}
 \usepackage{amsmath} % Librairie  pour utiliser les maths
 \usepackage{amsfonts}
 \usepackage{tikz}  % Utile pour la graphique short path
 \usepackage{float}% utile pour placer les tableaux
-\title{{Placement report}}
-\author{Thomas Wisson\\
-\texttt{thomas.wisson@etudiant.univ-bpclermont.fr}}
-\date{May and June 2011}
 \begin{document}
-\maketitle
 
 
-\input{intro.tex} %Ajoute le blabla utile pour polytech
+\includegraphics[width=20cm, height=27cm]{Intro} %Ajoute le blabla utile pour polytech
+
+\newpage
  
 \section*{Introduction}\label{sec:intro}
 Lot sizing is a classic issue of logistics which consists to satisfy the demand 
@@ -536,6 +534,29 @@ already use by Won and DaeSoo \cite{Won&DaeSoo}
     \intertext{subject to}
     &d(p_t,q_t)= \kappa p_t ^{\alpha}q_t^{\beta} \\
 \end{align}
+
+An important property of this profit function is to have one and only one
+maximum in order to be abble to use the Thomas's algorithm \cite{Thomas70}
+To study this function we just have to study the function : \[\phi(p,q)=
+p^{\alpha} q^{\beta} (p-q)\]
+As it model a price and a marketing it is in a compact so there is a maximum
+and to have a condition to have an unique maximum we just have to solve :
+\begin{align*}
+        \nabla \phi &= 0\\
+        &\Leftrightarrow \left\{
+                \begin{array}{cl}
+                    &(\alpha +1)p - \alpha q =0\\
+                    &\beta p - (\beta +1)q =0
+                \end{array}\right .\\
+\end{align*} 
+
+This system have one and only one solution if its determinant is non null. 
+Thus this function profit admit one and only one maximum if $ \alpha + \beta 
+\neq -1$
+
+
+To illustrated the demand and is evolution switch the price and the marketing 
+effect : 
 
 \begin{figure}[H]
 \begin{center}
