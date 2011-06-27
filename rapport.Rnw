@@ -7,37 +7,23 @@
 \usepackage{amsfonts}
 \usepackage{tikz}  % Utile pour la graphique short path
 \usepackage{float}% utile pour placer les tableaux
+\usepackage{textpos}
 \begin{document}
 
+\section*{Aknowledgment}
+\addcontentsline{toc}{section}{Aknowledgment}
 
-\includegraphics[width=20cm, height=27cm]{Intro} %Ajoute le blabla utile pour polytech
+\begin{textblock*}{10cm}(1mm,75mm) 
+I want to thank the Høgskolen i molde which allow me to 
+do this placement in there university.
+\end{textblock*} 
+\begin{textblock*}{10cm}(1mm,95mm) 
+And mostly Guillaume Lanquepin-Chesnais, my 
+supervisor in this placement because of his help during 
+all my trip in Norway and to have use so much time to 
+help me all along my work.
+\end{textblock*} 
 
-\newpage
- 
-\section*{Introduction}\label{sec:intro}
-Lot sizing is a classic issue of logistics which consists to satisfy the demand 
-and minimize the producing cost. We need to balance setup's cost and hold's stock.
-
-Even if there are a lot of heuristics, exact's methods exists. In the 50's, 
-Wagner and Whitin\cite{Wagner&Whitin58}, show that no producing planning can be optimal 
-if we product and hold in the same time it is the theorem horizon. There are an 
-algorithm, based on the dynamic programming, which solve a lot sizing problem in 
-quadratic complexity (for each period it compute all producing costs.)
-Then it's showed that the aggregate demand and costs make a 
-convex space where its envelop is the optimal solution\cite{Wagelmans&Kolen92}.
-This allow to search the lower cost on this planning horizon, and this search 
-have a $logT$ complexity that's why we have an algorithm with a best complexity, 
-even linear when all parameters are constant and the search occurred in constant
-complexity.
-
-On an other side Thomas\cite{Thomas70} extends the minimization cost of Wagner
- and Whitin \cite{Wagner&Whitin58} by the maximization of profit. In fact in the
- monopolistic environment the demand depend only of the price that allow to it 
- increase benefits. But this algorithm have a quadratic complexity
- 
-Your first idea is to use the algorithm based on the dynamic programming 
-of \cite{Wagelmans&Kolen92} and to apply it in the monopolistic environment to 
-adapt the algorithm of Thomas to have a best complexity.
 
 \newpage
 \tableofcontents
@@ -45,11 +31,14 @@ adapt the algorithm of Thomas to have a best complexity.
 \listoffigures
 \listoftables
 \newpage
+\input{intro.tex}%Ajoute le blabla utile pour polytech
+\newpage
+
 \section{Monopolistic environment}
 
 \subsection{The Thomas's algorithm}
 
-\subsubsection{The model}\label{sbsec:model1}
+\paragraph*{The model}\label{sbsec:model1}
 \begin{align}
     &\Pi = \sum_{t=0}^T d_{t}p_{t} - s_{t} \delta_{t} - 
     h_{t-1} I_{t} - x_{t} X_{t}
@@ -75,7 +64,7 @@ adapt the algorithm of Thomas to have a best complexity.
     X_{t}&\text{ is the amount produced in period t}\\
 \end{align*}
 
-\subsubsection{The planning horizon}
+\subsection{The planning horizon}
 
 In the Thomas's algorithm \cite{Thomas70} the only assumption on the demand is 
 that $d(p_{t})p_{t}$ take is maximum value for a finite value of $p_{t}$. This 
@@ -141,7 +130,7 @@ Thomas's algorithm \cite{Thomas70} compute all previous profits, in the example,
 at the period 3 we compute $\pi_{2,3}, \pi_{1,3}$ and $\pi_{0,3}$. That's why we
 have a complexity in $T^2$
 
-\subsubsection{Idea to perform the algorithm}
+\subsection{Idea to perform the algorithm}
 We have seen that the complexity of Thomas's algorithm \cite{Thomas70} is $T^2$.
 To decrease this complexity we want to adapt the search of Wagelmans and Kolen
 \cite{Wagelmans&Kolen92} and to apply it on the case of Thomas.
@@ -269,7 +258,6 @@ This allow to change just a little the model and to use the Thomas 's algorithm
 effect. In fact the marketing have effect on several period that's why we try 
 thank's to this discrete model to characterize this aspect.
 
-\subsubsection{The model}
 
 \begin{align}
     \Pi =\sum_{t=0}^T D(p_t)&p_t - s_t \delta_t-h_{t-1} I_t - x_t X_t - 
@@ -590,7 +578,6 @@ contour(price, marketing, dem, add=TRUE, col="black")
 
 \subsection{The delay effect}
 
-\subsubsection{Continue}
 
 \begin{align}
     \Pi = &\sum_{t=0}^T d(p_t,q_t,q_{t-1},q_{t-2},...)p_t - s_,t \delta_t - 
@@ -602,7 +589,8 @@ contour(price, marketing, dem, add=TRUE, col="black")
     &I_t \geq 0\;\;\; X_t \geq 0\;\;\;\delta_t\in \{0,1\}\notag
 \end{align}
 
-
+\newpage
+\input{conclusion.tex}
 \newpage
 \bibliographystyle{alpha}
 \bibliography{bib_stage}
