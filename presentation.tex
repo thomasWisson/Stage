@@ -1,0 +1,91 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[frenchb]{babel}
+\usepackage{float}
+\usepackage{graphicx}
+\usetheme{CambridgeUS}
+\title[Soutenance de projet]{Soutenance de projet\\Etude des profits de production suivant divers demandes}
+\author[WISSON -- GMM2]{Wisson Thomas -- GMM2}
+\date{Jeudi 1er Septembre 2011}
+
+\pgfdeclareimage[height=0.85cm]{left-logo}{image/logoPolytech}
+\pgfdeclareimage[height=0.85cm]{right-logo}{image/logoHogskolen}
+\logo{\pgfuseimage{right-logo}}
+
+\setbeamertemplate{sidebar left}
+{
+\logo{\pgfuseimage{left-logo}}
+\vfill%
+\rlap{\hskip0.1cm\insertlogo}%
+\vskip15pt%
+}
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+
+\AtBeginSection
+{
+\begin{frame}<beamer>
+   \frametitle{Plan}
+   \tableofcontents[currentsection,currentsubsection]
+\end{frame}
+
+}
+
+
+\section{Introduction}
+\begin{frame}{Accueil}
+    \begin{figure}[H]
+        \text{Molde, Norvège}\\
+        \includegraphics[scale=0.2]{image/carte}
+        \includegraphics[scale=0.2]{image/map1}\\
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Accueil}
+    \begin{itemize}
+    \item Université de Molde 
+    \begin{figure}[H]
+        \includegraphics[scale=0.3]{image/university}\\
+        \caption{Høgskolen i Molde}
+    \end{figure}
+        \item Tuteur : Guillaume Lanquepin-Chesnais
+        \item Date du Stage : du 2 mai au 1er juillet 2011
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Sujet}
+    \begin{itemize}
+        \item Problème de lot
+        \item Ajout du marketing
+    \end{itemize}
+\end{frame}
+
+\section{Problème de lots}
+\begin{frame}{Introduction aux problèmes de lots}
+\end{frame}
+
+\begin{frame}{Algorithme de Wagner et Within}
+\end{frame}
+
+\begin{frame}{Algorithme de Walgner et Kolen}
+\end{frame}
+
+\begin{frame}{Algorithme de Thomas}
+\end{frame}
+
+\section{Mon travail}
+\begin{frame}{Amélioration d'une complexité}
+\end{frame}
+
+\begin{frame}{Ajout de l'effet de marketing}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}{Conclusion}
+\end{frame}
+\end{document}
