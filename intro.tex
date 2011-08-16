@@ -1,15 +1,26 @@
 \addcontentsline{toc}{section}{Introduction}
 \section*{Introduction}
 
-As a second-year student in Polytech’Clermont-Ferrand engineering school, we have to perform a placement abroad to discover professional world and to possibly act up to what we have learned during the years of school. 
+As second-year student in Polytech’Clermont-Ferrand engineering school, we have
+to perform a placement abroad in order to discover the business world and to
+possibly act up to what we have learned during the years of school. 
 
-I made my intership in the university of Molde in Norway : "Høgskolen i Molde". This university is specialized in logistics. During my work in Molde, I worked with Guillaume Lanquepin-Chesnais on lots sizing problem. Lot sizing is a classic issue of logistics which consists to satisfy the demand 
-and minimize the producing cost. We need to balance setup's cost and hold's stock.
+I made my intership in the university of Molde in Norway : "Høgskolen i Molde".
+This one is specialized in logistics. During my practice in Molde, I worked
+with Guillaume Lanquepin-Chesnais on lot-sizing problem. This is a
+classic issue of logistics which consists to satisfy the demand and minimize
+the producing cost. We need to balance setup cost and holding stock.
 
-As this placement is more "research-type", it consisted in read and understand articles about the topic and to adapt what I have read for a new problem.
-An other purpose of this placement is to write an article which explain what we do and our results about theses problems. That's why this repport look like an article, I decided to use research standart for the write of this repport.
+As this placement is research oriented, it consisted in reading and
+understanding articles about the topic and implementing what I have read for a
+new problem. An other purpose of this practice is to write an article which
+explains what we do and our results about theses problems. That is why this
+report look like a scientific article, I decided so to use research formalism
+to write this report.
 
-Hence, in this repport we can find information about the university, the goals of this placement and the different step of my placement whith all my study and results.
+Hence, we can find in this report informations about the university, the goals
+of this training period and the different steps of my placement with all my
+studies and results.
 \newpage
 \section{Høgskolen i Molde} 
 
@@ -34,24 +45,27 @@ The university of Molde is 2000 students, 180 employees and 32 study programs in
 
 \subsection{Purpose of the placement}
 Lot sizing is a classic issue of logistics which consists to satisfy the demand 
-and minimize the producing cost. We need to balance setup's cost and hold's stock.
+and minimize the producing cost. We need to balance setup cost and holding stock.
 
-Even if there are a lot of heuristics, exact's methods exists. In the 50's, 
-Wagner and Whitin\cite{Wagner&Whitin58}, show that no producing planning can be optimal 
-if we product and hold in the same time it is the theorem horizon. There are an 
-algorithm, based on the dynamic programming, which solve a lot sizing problem in 
-quadratic complexity (for each period it compute all producing costs.)
-Then it's showed that the aggregate demand and costs make a 
-convex space where its envelop is the optimal solution\cite{Wagelmans&Kolen92}.
-This allow to search the lower cost on this planning horizon, and this search 
-have a $logT$ complexity that's why we have an algorithm with a best complexity, 
-even linear when all parameters are constant and the search occurred in constant
+Even if there are lot of heuristics, exact methods exists. In the 50's, Wagner
+and Whitin\cite{Wagner&Whitin58}, show that no producing planning can be
+optimal if we product and hold in the same time it is the theorem horizon since
+we are always able to cut costs by rescheduling production to avoid inventory.
+There are an algorithm thus, based on the dynamic programming, which solves a
+lot sizing problem in quadratic complexity of the number of period\footnote{for
+each period it computes all previous production costs.} Then it was showed that
+the aggregate demand and costs make a convex space where its envelop is the
+optimal solution\cite{Wagelmans&Kolen92}.  This allows to search the lower cost
+on this planning horizon, and this search have a $logT$ complexity that's why
+we have an algorithm with a better complexity, even linear when all parameters
+are constant and the search occurred in constant
 complexity.
 
-On an other side Thomas\cite{Thomas70} extends the minimization cost of Wagner
- and Whitin \cite{Wagner&Whitin58} by the maximization of profit. In fact in the
- monopolistic environment the demand depend only of the price that allow to it 
- increase benefits. But this algorithm have a quadratic complexity
+On an other side, Thomas\cite{Thomas70} extends the minimization cost of Wagner
+and Whitin \cite{Wagner&Whitin58} to the maximization of profit. In fact in the
+monopolistic environment the demand depend only of the price, and pricing can
+be then a decision variable. For the same reason than Wagner and Within's one,
+this algorithm have a quadratic complexity
  
 The first goald is to use the algorithm based on the dynamic programming 
 of \cite{Wagelmans&Kolen92} and to apply it in the monopolistic environment to 

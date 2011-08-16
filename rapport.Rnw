@@ -14,14 +14,13 @@
 \addcontentsline{toc}{section}{Aknowledgment}
 
 \begin{textblock*}{10cm}(1mm,75mm) 
-I want to thank the Høgskolen i molde which allow me to 
-do this placement in there university.
+I want to thank the \textit{Høgskolen i Molde} which allows me to do this
+placement in their research group.
 \end{textblock*} 
 \begin{textblock*}{10cm}(1mm,95mm) 
-And mostly Guillaume Lanquepin-Chesnais, my 
-supervisor in this placement because of his help during 
-all my trip in Norway and to have use so much time to 
-help me all along my work.
+And mostly Guillaume Lanquepin-Chesnais, my supervisor in this placement
+because of his help during all my trip in Norway and the time he spent to help
+me all along my work.
 \end{textblock*} 
 
 
